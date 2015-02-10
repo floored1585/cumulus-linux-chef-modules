@@ -1,0 +1,13 @@
+# Managed by Chef
+<% @speed_40g.each do |port| -%>
+<%= port %>=40G
+<% end -%>
+<% @speed_10g.each do |port| -%>
+<%= port %>=10G
+<% end -%>
+<% @speed_4_by_10g.each do |port| -%>
+<%= port %>=4x10G
+<% end -%>
+<% @speed_40_div_4g.each do |port| -%>
+<%= port %>=40G/4
+<% end -%>
