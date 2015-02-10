@@ -1,13 +1,8 @@
-cumulus-cl-ports-chef CHANGELOG
-===============================
+cumulus-linux-chef-modules CHANGELOG
+====================================
 
-This file is used to list changes made in each version of the cumulus-cl-ports-chef cookbook.
+This file is used to list changes made in each version of the cumulus-linux-chef-modules cookbook.
 
 0.1.0
 -----
-- [your_name] - Initial release of cumulus-cl-ports-chef
-
-- - -
-Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
-
-The [Github Flavored Markdown page](http://github.github.com/github-flavored-markdown/) describes the differences between markdown on github and standard markdown.
+- Kristian Van Der Vliet - Initial release of cumulus-linux-chef-modules
