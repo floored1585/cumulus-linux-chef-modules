@@ -1,13 +1,4 @@
 # Managed by Chef
-<% @speed_40g.each do |port| -%>
-<%= port %>=40G
-<% end -%>
-<% @speed_10g.each do |port| -%>
-<%= port %>=10G
-<% end -%>
-<% @speed_4_by_10g.each do |port| -%>
-<%= port %>=4x10G
-<% end -%>
-<% @speed_40g_div_4.each do |port| -%>
-<%= port %>=40G/4
+<% Cumulus::Utils.gen_port_hash(@speed_40g, @speed_10g, @speed_4_by_10g, @speed_40g_div_4).each do |port, speed| -%>
+<%= port %>=<%= speed %>
 <% end -%>

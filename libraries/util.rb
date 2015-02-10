@@ -28,5 +28,69 @@ module Cumulus
       end
       out
     end
+
+    ##
+    # Generate a single unified hash of the ports and their speeds, and return
+    # a hash sorted by port number.
+    #
+    # = Example:
+    #
+    #   gen_port_hash(['swp1'], ['swp5','swp6'], ['swp10'], ['swp12'])
+    #   => [[1, "40G"], [5, "10G"], [6, "10G"], [10, "4x10G"], [12, "40G/4"]]
+    #
+    # = Parameters:
+    # speed_40g::
+    #   An array of 40G ports
+    # speed_10g::
+    #   An array of 10G ports
+    # speed_4_by_10g
+    #   An array of 4x10G ports
+    # speed_40g_div_4
+    #   An array of 40G/4 ports
+    #
+    # = Returns:
+    # A sorted hash of the ports and their configured speeds
+    #
+    def self.gen_port_hash(speed_40g = [], speed_10g = [], speed_4_by_10g = [], speed_40g_div_4 = [])
+      port_hash = {}
+      speed_40g.each do |port|
+        if match = port.match(/(\d+)/)
+          port_num = match[1]
+          port_hash[port_num.to_i] = '40G'
+        else
+          Chef::Log.info("Invalid port #{port}")
+        end
+      end
+
+      speed_10g.each do |port|
+        if match = port.match(/(\d+)/)
+          port_num = match[1]
+          port_hash[port_num.to_i] = '10G'
+        else
+          Chef::Log.info("Invalid port #{port}")
+        end
+      end
+
+      speed_4_by_10g.each do |port|
+        if match = port.match(/(\d+)/)
+          port_num = match[1]
+          port_hash[port_num.to_i] = '4x10G'
+        else
+          Chef::Log.info("Invalid port #{port}")
+        end
+      end
+
+      speed_40g_div_4.each do |port|
+        if match = port.match(/(\d+)/)
+          port_num = match[1]
+          port_hash[port_num.to_i] = '40G/4'
+        else
+          Chef::Log.info("Invalid port #{port}")
+        end
+      end
+
+      # Return the full hash sorted by the key (I.e. numeric order)
+      port_hash.sort
+    end
   end
 end
