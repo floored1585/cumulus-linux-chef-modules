@@ -1,14 +1,12 @@
-require 'utils.rb'
-
 def whyrun_supported?
   true
 end
 
 use_inline_resources
 
-action :configure do
+action :create do
   template '/etc/cumulus/ports.conf' do
-    cookbook cumulus-cl-ports-chef
+    cookbook 'cumulus-cl-ports-chef'
     source 'ports.erb'
     variables({
       :speed_10g => Cumulus::Utils.expand_port_list(new_resource.speed_10g),

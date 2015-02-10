@@ -1,5 +1,5 @@
-actions :configure
-default_action :configure
+actions :create
+default_action :create
 
 attribute :name, :kind_of => String, :name_attribute => true
 attribute :speed_10g, :kind_of => Array, :default => []
