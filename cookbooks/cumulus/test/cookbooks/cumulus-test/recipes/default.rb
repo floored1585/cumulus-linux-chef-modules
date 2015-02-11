@@ -31,4 +31,5 @@ end
 
 cumulus_license 'test' do
   source 'http://localhost/test.lic'
+  force true
 end
