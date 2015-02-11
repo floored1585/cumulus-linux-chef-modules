@@ -4,7 +4,7 @@ end
 
 use_inline_resources
 
-action :create do
+action :install do
   unless license_exists?
     execute "/usr/cumulus/bin/cl-license -i #{new_resource.source}" do
     end
