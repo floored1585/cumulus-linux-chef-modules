@@ -28,7 +28,7 @@ def license_invalid?
   invalid = true
   begin
     if ::File.file?('/etc/cumulus/.license.txt')
-      if match = ::File.read('/etc/cumulus/.license.txt').match(/^expires=(\d+)$/)
+      if match = ::File.read('/etc/cumulus/.license.txt').match(/^expires=(\d+).*$/)
         invalid = Time.now.to_i >= match[1].to_i
       end
     end
