@@ -26,6 +26,15 @@ cumulus_ports 'speeds' do
 end
 ```
 
+## Install Cumulus Linux license file
+
+```ruby
+cumulus_license 'example' do
+  source 'http://example.com/cumulus.lic'
+  notifies :restart, "service[switchd]"
+end
+```
+
 # LIBRARIES
 ## Util
 
