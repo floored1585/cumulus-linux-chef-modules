@@ -17,7 +17,7 @@ end
 
 file '/usr/cumulus/bin/cl-license' do
   content '#!/bin/sh
-    echo "Rocket Turtle!\n$0 $@" > /etc/cumulus/.license.txt'
+    echo "Rocket Turtle!\nexpires=$(date +%s)\n$0 $@" > /etc/cumulus/.license.txt'
   mode '0755'
 end
 
@@ -27,6 +27,10 @@ cumulus_ports 'speeds' do
   speed_40g ['swp3','swp5-10', 'swp12']
   speed_40g_div_4 ['swp15','swp16']
   speed_4_by_10g ['swp20-32']
+end
+
+cumulus_license 'test' do
+  source 'http://localhost/test.lic'
 end
 
 cumulus_license 'test' do
