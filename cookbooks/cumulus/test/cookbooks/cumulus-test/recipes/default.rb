@@ -13,3 +13,7 @@ cumulus_ports 'speeds' do
   speed_40g_div_4 ['swp15','swp16']
   speed_4_by_10g ['swp20-32']
 end
+
+cumulus_license 'test' do
+  source 'http://localhost/test.lic'
+end
