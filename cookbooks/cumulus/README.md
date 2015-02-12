@@ -26,6 +26,23 @@ cumulus_ports 'speeds' do
 end
 ```
 
+## Install Cumulus Linux license file
+
+```ruby
+cumulus_license 'example' do
+  source 'http://example.com/cumulus.lic'
+  notifies :restart, "service[switchd]"
+end
+```
+If a license is already installed the provider will check that it has expired before replacing it. You can over-ride this behaviour with the `force` parameter:
+```ruby
+cumulus_license 'example' do
+  source 'http://example.com/cumulus.lic'
+  force true
+  notifies :restart, "service[switchd]"
+end
+```
+
 # LIBRARIES
 ## Util
 
