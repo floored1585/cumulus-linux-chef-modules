@@ -1,6 +1,24 @@
 require 'rubocop/rake_task'
+require 'berkshelf'
+require 'kitchen/rake_tasks'
 
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.patterns = ['libraries','providers','resources','test/integration/default/serverspec']
   task.options = ['--display-cop-names']
+end
+
+Kitchen::RakeTasks.new
+
+desc "Install Berkshelf cookbooks for testing"
+task :berks_install do
+  begin
+    berksfile = Berkshelf::Berksfile.from_file("Berksfile")
+    berksfile.install
+  rescue StandardError => e
+    STDERR.puts("Failed to install Chef cookbooks: #{e.message}")
+  end
+end
+
+desc "Converge and run tests"
+task :test => [:berks_install, 'kitchen:all'] do
 end
