@@ -9,7 +9,7 @@ module Cumulus
     #
     #   expand_port_list(['swp1','swp5-7', 'swp20'])
     #   => ["swp1", "swp5", "swp6", "swp7", "swp20"]
-    # 
+    #
     # = Parameters:
     # list::
     #   An array of ports, some of which may be a port range
@@ -20,7 +20,8 @@ module Cumulus
     def self.expand_port_list(list = [])
       out = []
       list.each do |port|
-        if match = port.match(/(\D+)(\d+)-(\d+)/)
+        match = port.match(/(\D+)(\d+)-(\d+)/)
+        if match
           out.concat((match[2]..match[3]).to_a.map { |p| "#{match[1]}#{p}" })
         else
           out << port
@@ -54,7 +55,8 @@ module Cumulus
     def self.gen_port_hash(speed_40g = [], speed_10g = [], speed_4_by_10g = [], speed_40g_div_4 = [])
       port_hash = {}
       speed_40g.each do |port|
-        if match = port.match(/(\d+)/)
+        match = port.match(/(\d+)/)
+        if match
           port_num = match[1]
           port_hash[port_num.to_i] = '40G'
         else
@@ -63,7 +65,8 @@ module Cumulus
       end
 
       speed_10g.each do |port|
-        if match = port.match(/(\d+)/)
+        match = port.match(/(\d+)/)
+        if match
           port_num = match[1]
           port_hash[port_num.to_i] = '10G'
         else
@@ -72,7 +75,8 @@ module Cumulus
       end
 
       speed_4_by_10g.each do |port|
-        if match = port.match(/(\d+)/)
+        match = port.match(/(\d+)/)
+        if match
           port_num = match[1]
           port_hash[port_num.to_i] = '4x10G'
         else
@@ -81,7 +85,8 @@ module Cumulus
       end
 
       speed_40g_div_4.each do |port|
-        if match = port.match(/(\d+)/)
+        match = port.match(/(\d+)/)
+        if match
           port_num = match[1]
           port_hash[port_num.to_i] = '40G/4'
         else
