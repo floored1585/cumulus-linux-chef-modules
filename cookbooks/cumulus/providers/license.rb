@@ -7,7 +7,7 @@ end
 use_inline_resources
 
 action :install do
-  if license_invalid? or new_resource.force
+  if license_invalid? || new_resource.force
     source = new_resource.source
 
     validate_url!(source)
@@ -15,7 +15,7 @@ action :install do
 
     new_resource.updated_by_last_action(true)
   end
-end 
+end
 
 ##
 # Check if the license file exists, and if if exists, if it has expired
@@ -28,14 +28,14 @@ def license_invalid?
   invalid = true
   begin
     if ::File.file?('/etc/cumulus/.license.txt')
-      if match = ::File.read('/etc/cumulus/.license.txt').match(/^expires=(\d+).*$/)
-        invalid = Time.now.to_i >= match[1].to_i
-      end
+      match = ::File.read('/etc/cumulus/.license.txt').match(/^expires=(\d+).*$/)
+      invalid = Time.now.to_i >= match[1].to_i if match
     end
-  rescue Exception => e
+  rescue StandardError => e
     Chef::Application.fatal!("Checking Cumulus license file failed: #{e.message}")
   end
-  return invalid
+
+  invalid
 end
 
 ##
@@ -43,8 +43,8 @@ end
 #
 def validate_url!(uri_str)
   begin
-    URI::parse(uri_str)
-  rescue URI::InvalidURIError => e
+    URI.parse(uri_str)
+  rescue URI::InvalidURIError
     Chef::Application.fatal!("The cumulus_license source URL #{uri_str} is invalid")
   end
 end

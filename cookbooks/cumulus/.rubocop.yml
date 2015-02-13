@@ -6,3 +6,5 @@ Metrics/MethodLength:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
+Style/RedundantBegin:
+  Enabled: false
