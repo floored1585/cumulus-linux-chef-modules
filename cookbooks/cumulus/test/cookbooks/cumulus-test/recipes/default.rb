@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: cumulus-cl-ports-chef-test
+# Cookbook Name:: cumulus-test
 # Recipe:: default
 #
 # Copyright 2015, Cumulus Networks
@@ -21,19 +21,5 @@ file '/usr/cumulus/bin/cl-license' do
   mode '0755'
 end
 
-# Invoke the providers
-cumulus_ports 'speeds' do
-  speed_10g ['swp1']
-  speed_40g ['swp3','swp5-10', 'swp12']
-  speed_40g_div_4 ['swp15','swp16']
-  speed_4_by_10g ['swp20-32']
-end
-
-cumulus_license 'test' do
-  source 'http://localhost/test.lic'
-end
-
-cumulus_license 'test-with-force' do
-  source 'http://localhost/test.lic'
-  force true
-end
+include_recipe "cumulus-test::ports"
+include_recipe "cumulus-test::license"
