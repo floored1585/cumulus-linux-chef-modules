@@ -23,3 +23,4 @@ end
 
 include_recipe "cumulus-test::ports"
 include_recipe "cumulus-test::license"
+include_recipe "cumulus-test::interface_policy"
