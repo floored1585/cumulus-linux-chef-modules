@@ -22,7 +22,7 @@ action :manage do
     end
 
     remove.each do |intf|
-      file ::File.join('', 'etc', 'network','interfaces.d', intf) do
+      file ::File.join('', 'etc', 'network', 'interfaces.d', intf) do
         action :delete
       end
     end
