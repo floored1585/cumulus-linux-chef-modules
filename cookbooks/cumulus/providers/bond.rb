@@ -9,12 +9,17 @@ use_inline_resources
 action :create do
   name = new_resource.name
   slaves = Cumulus::Utils.expand_port_list(new_resource.slaves)
+  clag_id = new_resource.clag_id
+
   config = { 'bond-slaves' => slaves.join(' '),
              'bond-miimon' => 100,
              'bond-min-links' => 1,
              'bond-mode' => '802.3ad',
              'bond-xmit-hash-policy' => 'layer3+4',
              'bond-lacp-rate' => 1 }
+
+  # Insert optional parameters
+  config['clag-id'] = clag_id unless clag_id.nil?
 
   new = [ { 'auto' => true,
             'name' => name,
