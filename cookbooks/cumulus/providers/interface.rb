@@ -7,42 +7,56 @@ use_inline_resources
 action :create do
   name = new_resource.name
   addr_method = new_resource.addr_method
-  link_speed = new_resource.link_speed
-  clag_enable = new_resource.clag_enable
-  clag_peer_ip = new_resource.clag_peer_ip
-  clag_sys_mac = new_resource.clag_sys_mac
-  alias_name = new_resource.alias
+  speed = new_resource.speed
+  mtu = new_resource.mtu
+  clagd_enable = new_resource.clagd_enable
+  alias_name = new_resource.alias_name
   virtual_mac = new_resource.virtual_mac
   virtual_ip = new_resource.virtual_ip
   vids = new_resource.vids
+  pvid = new_resource.pvid
+  mstpctl_portnetwork = new_resource.mstpctl_portnetwork
+  mstpctl_bpduguard = new_resource.mstpctl_bpduguard
+
+  location = new_resource.location || Cumulus::Utils.interfaces_dir
 
   ipv4 = new_resource.ipv4
   ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
 
-  # Family is always 'inet' if a method is set
-  addr_family = addr_method.nil? ? nil : 'inet'
-
   config = {}
 
   # Insert optional parameters
   config['address'] = address unless address.nil?
-  config['alias'] = alias_name unless alias_name.nil?
-  config['vids'] = vids unless vids.nil?
-  config['virtual-mac'] = virtual_mac unless virtual_mac.nil?
-  config['virtual-ip'] = virtual_ip unless virtual_ip.nil?
+  config['alias'] = "\"#{alias_name}\"" unless alias_name.nil?
+  config['mtu'] = mtu unless mtu.nil?
+  config['bridge-vids'] = vids unless vids.nil?
+  config['bridge-pvid'] = pvid unless pvid.nil?
+  config['address-virtual'] = virtual_mac unless virtual_mac.nil?
+  config['address-virtual'] = virtual_ip unless virtual_ip.nil?
+  config['mstpctl-portnetwork'] = Cumulus::Utils.bool_to_yn(mstpctl_portnetwork) unless mstpctl_portnetwork.nil?
+  config['mstpctl-bpduguard'] = Cumulus::Utils.bool_to_yn(mstpctl_bpduguard) unless mstpctl_bpduguard.nil?
 
-  if clag_enable
+  # Insert CLAG parameters if CLAG is enabled
+  if clagd_enable
+    clagd_peer_ip = new_resource.clagd_peer_ip
+    clagd_priority = new_resource.clagd_priority
+    clagd_sys_mac = new_resource.clagd_sys_mac
+
     config['clagd-enable'] = true
-    config['clagd-peer-ip'] = clag_peer_ip unless clag_peer_ip.nil?
-    config['clagd-sys-mac'] = clag_sys_mac unless clag_sys_mac.nil?
+    config['clagd-peer-ip'] = clagd_peer_ip unless clagd_peer_ip.nil?
+    config['clagd-priority'] = clagd_priority unless clagd_priority.nil?
+    config['clagd-sys-mac'] = clagd_sys_mac unless clagd_sys_mac.nil?
   end
 
-  unless link_speed.nil?
-    config['link-speed'] = link_speed
+  unless speed.nil?
+    config['link-speed'] = speed
     # link-duplex is always set to 'full' if link-speed is set
     config['link-duplex'] = 'full'
   end
+
+  # Family is always 'inet' if a method is set
+  addr_family = addr_method.nil? ? nil : 'inet'
 
   new = [ { 'auto' => true,
             'name' => name,
@@ -60,7 +74,7 @@ action :create do
 
     intf = Cumulus::Utils.hash_to_if(name, new)
 
-    file Cumulus::Utils.interfaces_dir(name) do
+    file ::File.join(location, name) do
       owner 'root'
       group 'root'
       content intf
