@@ -182,6 +182,23 @@ module Cumulus
           Chef::Log.fatal("I have fallen and I can't get up: #{ex}")
         end
       end
+
+      ##
+      # Convert a boolean value to "yes" or "no" (rather than to_s which
+      # converts to "True" and "False"
+      #
+      # = Example
+      #
+      #   bool_to_yn(true)
+      #   => 'yes'
+      #
+      # = Parameters::
+      # bool::
+      #   Boolean value to convert from
+      #
+      def bool_to_yn(bool)
+        bool ? "yes": "no"
+      end
     end
   end
 end
