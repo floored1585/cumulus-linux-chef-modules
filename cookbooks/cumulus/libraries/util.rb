@@ -1,3 +1,5 @@
+require 'json'
+
 # Top level namespace for Cumulus Networks
 module Cumulus
   # General utility functions
