@@ -17,10 +17,11 @@ cumulus_bridge 'br1' do
   ports ['swp12-13']
   ipv4 ['10.0.0.1/24', '192.168.1.0/16']
   ipv6 ['2001:db8:abcd::/48']
-  # alias 'classic bridge number 1'
+  alias_name 'classic bridge number 1'
   mtu 9000
   stp false
   mstpctl_treeprio 4096
+  virtual_ip '192.168.100.1'
 end
 
 # New bridge driver with defaults
@@ -37,8 +38,9 @@ cumulus_bridge 'bridge3' do
   pvid 1
   ipv4 ['10.0.100.1/24', '192.168.100.0/16']
   ipv6 ['2001:db8:1234::/48']
-  # alias 'new bridge number 3'
+  alias_name 'new bridge number 3'
   mtu 9000
   stp false
   mstpctl_treeprio 4096
+  virtual_mac 'aa:bb:cc:dd:ee:ff'
 end
