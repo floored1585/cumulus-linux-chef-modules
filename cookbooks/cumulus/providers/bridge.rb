@@ -13,8 +13,7 @@ action :create do
   alias_name = new_resource.alias_name
   virtual_ip = new_resource.virtual_ip
   virtual_mac = new_resource.virtual_mac
-
-  location = new_resource.location || Cumulus::Utils.interfaces_dir
+  location = new_resource.location
 
   ipv4 = new_resource.ipv4
   ipv6 = new_resource.ipv6

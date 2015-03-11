@@ -6,7 +6,7 @@ use_inline_resources
 
 action :manage do
   allowed = Cumulus::Utils.expand_port_list(new_resource.allowed)
-  location = new_resource.location || Cumulus::Utils.interfaces_dir
+  location = new_resource.location
   current = Dir.entries(location).reject { |f| ::File.directory? f }
 
   # Intersect the two lists; we want the set that is in 'current' which are NOT

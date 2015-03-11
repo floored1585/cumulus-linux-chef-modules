@@ -102,23 +102,6 @@ module Cumulus
       end
 
       ##
-      # Return the absolute path to an interfaces fragment, or if no interface
-      # name is given, the fragments directory.
-      #
-      # = Example:
-      #
-      #   interfaces_dir('swp1')
-      #   => '/etc/network/interfaces.d/swp1'
-      #
-      # = Parameters:
-      # fname::
-      #   Interface fragment
-      #
-      def interfaces_dir(fname = '')
-        ::File.join('', 'etc', 'network', 'interfaces.d', fname)
-      end
-
-      ##
       # Use ifquery to generate a JSON representation of an interface and
       # return the hash.
       #

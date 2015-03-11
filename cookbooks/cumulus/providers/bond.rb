@@ -19,8 +19,7 @@ action :create do
   pvid = new_resource.pvid
   mstpctl_portnetwork = new_resource.mstpctl_portnetwork
   mstpctl_bpduguard = new_resource.mstpctl_bpduguard
-
-  location = new_resource.location || Cumulus::Utils.interfaces_dir
+  location = new_resource.location
 
   ipv4 = new_resource.ipv4
   ipv6 = new_resource.ipv6
