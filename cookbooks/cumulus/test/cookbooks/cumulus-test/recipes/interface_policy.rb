@@ -8,10 +8,10 @@
 #
 
 # Create test files
-%w( eth0 lo swp1 swp2 swp3 swp4 swp5 swp6 swp7 swp8 swp9 swp10 swp99 ).each do |intf|
+%w( swp1 swp2 swp3 swp4 swp5 swp6 swp7 swp8 swp9 swp10 swp99 ).each do |intf|
   file "/etc/network/interfaces.d/#{intf}" do
     action :create
-    content "i am #{intf}"
+    content "iface #{intf}"
   end
 end
 
