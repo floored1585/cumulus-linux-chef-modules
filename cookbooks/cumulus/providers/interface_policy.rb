@@ -6,7 +6,8 @@ use_inline_resources
 
 action :manage do
   allowed = Cumulus::Utils.expand_port_list(new_resource.allowed)
-  current = Dir.entries(Cumulus::Utils.interfaces_dir).reject { |f| ::File.directory? f }
+  location = new_resource.location || Cumulus::Utils.interfaces_dir
+  current = Dir.entries(location).reject { |f| ::File.directory? f }
 
   # Intersect the two lists; we want the set that is in 'current' which are NOT
   # in 'allowed'
@@ -22,7 +23,7 @@ action :manage do
     end
 
     remove.each do |intf|
-      file Cumulus::Utils.interfaces_dir(intf) do
+      file ::File.join(location, intf) do
         action :delete
       end
     end
