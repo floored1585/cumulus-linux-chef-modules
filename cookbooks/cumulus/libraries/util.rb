@@ -34,6 +34,35 @@ module Cumulus
       end
 
       ##
+      # Take an array of ports and prefix any ranges with the 'glob' keyword
+      # for ifupdown2.
+      #
+      # = Example:
+      #
+      #   prefix_glob_port_list(['swp1','swp5-7', 'swp20'])
+      #   => ["swp1", "glob swp5-7", "swp20"]
+      #
+      # = Parameters:
+      # list::
+      #   An array of ports, some of which may be a port range
+      #
+      # = Returns:
+      # The array of ports with any ranges prefixed with the 'glob' keyword
+      #
+      def glob_prefix_port_list(list = [])
+        out = []
+        list.each do |port|
+          match = port.match(/^(.+)-(.+)$/)
+          if match
+            out << "glob #{port}"
+          else
+            out << port
+          end
+        end
+        out
+      end
+
+      ##
       # Generate a single unified hash of the ports and their speeds, and return
       # a hash sorted by port number.
       #

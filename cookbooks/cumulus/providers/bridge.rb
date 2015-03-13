@@ -7,7 +7,7 @@ use_inline_resources
 action :create do
   name = new_resource.name
   addr_method = new_resource.addr_method
-  ports = Cumulus::Utils.expand_port_list(new_resource.ports)
+  ports = Cumulus::Utils.prefix_glob_port_list(new_resource.ports)
   mtu = new_resource.mtu
   mstpctl_treeprio = new_resource.mstpctl_treeprio
   alias_name = new_resource.alias_name

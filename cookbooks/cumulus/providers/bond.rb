@@ -9,7 +9,7 @@ use_inline_resources
 action :create do
   name = new_resource.name
   addr_method = new_resource.addr_method
-  slaves = Cumulus::Utils.expand_port_list(new_resource.slaves)
+  slaves = Cumulus::Utils.prefix_glob_port_list(new_resource.slaves)
   alias_name = new_resource.alias_name
   mtu = new_resource.mtu
   clag_id = new_resource.clag_id
