@@ -23,11 +23,12 @@ module Cumulus
       def expand_port_list(list = [])
         out = []
         list.each do |port|
-          match = port.match(/(\D+)(\d+)-(\d+)/)
-          if match
-            out.concat((match[2]..match[3]).to_a.map { |p| "#{match[1]}#{p}" })
-          else
+          match = port.match(/(\w+[a-z.])(\d+)?-?(\d+)?(\w+)?/)
+          next unless match
+          if match[3].nil?
             out << port
+          else
+            out.concat((match[2].to_i..match[3].to_i).to_a.map { |p| "#{match[1]}#{p}#{match[4]}" })
           end
         end
         out
@@ -49,7 +50,7 @@ module Cumulus
       # = Returns:
       # The array of ports with any ranges prefixed with the 'glob' keyword
       #
-      def glob_prefix_port_list(list = [])
+      def prefix_glob_port_list(list = [])
         out = []
         list.each do |port|
           match = port.match(/^(.+)-(.+)$/)
