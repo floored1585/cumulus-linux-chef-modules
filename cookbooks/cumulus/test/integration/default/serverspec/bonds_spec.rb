@@ -9,13 +9,13 @@ intf_dir = File.join('', 'etc', 'network', 'interfaces.d')
 describe file("#{intf_dir}/bond0") do
   it { should be_file }
   its(:content) { should match(/iface bond0/) }
-  its(:content) { should match(/bond-slaves swp1 swp2 swp4/) }
+  its(:content) { should match(/bond-slaves glob swp1-2 swp4/) }
 end
 
 describe file("#{intf_dir}/bond1") do
   it { should be_file }
   its(:content) { should match(/iface bond1 inet static/) }
-  its(:content) { should match(/bond-slaves swp5 swp6/) }
+  its(:content) { should match(/bond-slaves glob swp5-6/) }
   its(:content) { should match(/mtu 9000/) }
   its(:content) { should match(/bond-miimon 99/) }
   its(:content) { should match(/bond-lacp-rate 9/) }
