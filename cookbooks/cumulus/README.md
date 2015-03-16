@@ -281,7 +281,7 @@ cumulus_bridge 'br10' do
   ports ['swp11-12.1', 'swp32.1']
   ipv4 ['10.1.1.1/24', '10.20.1.1/24']
   ipv6 ['2001:db8:abcd::/48']
-  alias 'classic bridge'
+  alias_name 'classic bridge'
   mtu 9000
   mstpctl_treeprio 4096
 end
