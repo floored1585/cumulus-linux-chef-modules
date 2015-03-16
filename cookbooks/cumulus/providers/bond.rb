@@ -47,18 +47,18 @@ action :create do
   # Family is always 'inet' if a method is set
   addr_family = addr_method.nil? ? nil : 'inet'
 
-  new = [ { 'auto' => true,
-            'name' => name,
-            'config' => config,
-            'addr_method' => addr_method,
-            'addr_family' => addr_family } ]
+  new = [{ 'auto' => true,
+           'name' => name,
+           'config' => config,
+           'addr_method' => addr_method,
+           'addr_family' => addr_family }]
 
   current = Cumulus::Utils.if_to_hash(name)
 
   Chef::Log.debug("current config for bond #{name} is #{current.to_json}")
   Chef::Log.debug("desired config for bond #{name} is #{new.to_json}")
 
-  if current.nil? or current != new
+  if current.nil? || current != new
     Chef::Log.debug("updating config for bond #{name}")
 
     intf = Cumulus::Utils.hash_to_if(name, new)

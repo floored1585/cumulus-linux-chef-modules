@@ -151,8 +151,8 @@ module Cumulus
             json = ifquery.read
           end
           return JSON.load(json)
-        rescue Exception => ex
-          Chef::Log.fatal("I have fallen and I can't get up: #{ex}")
+        rescue StandardError => ex
+          Chef::Log.fatal("failed to run ifquery for interface #{name}:  #{ex}")
         end
       end
 
@@ -184,7 +184,7 @@ module Cumulus
       def hash_to_if(name, hash)
         begin
           intf = ''
-          IO.popen("ifquery -i - -t json #{name}", mode='r+') do |ifquery|
+          IO.popen("ifquery -i - -t json #{name}", 'r+') do |ifquery|
             ifquery.write(hash.to_json)
             ifquery.close_write
 
@@ -193,8 +193,8 @@ module Cumulus
           end
           Chef::Log.debug("ifquery produced the following:\n#{intf}")
           return intf
-        rescue Exception => ex
-          Chef::Log.fatal("I have fallen and I can't get up: #{ex}")
+        rescue StandardError => ex
+          Chef::Log.fatal("failed to run ifquery -i for interface #{name}:  #{ex}\nInput was #{hash.to_json}")
         end
       end
 
@@ -212,7 +212,7 @@ module Cumulus
       #   Boolean value to convert from
       #
       def bool_to_yn(bool)
-        bool ? "yes": "no"
+        bool ? 'yes' : 'no'
       end
     end
   end
