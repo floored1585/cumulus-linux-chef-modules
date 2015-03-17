@@ -92,7 +92,7 @@ The provider uses the `cl-license` command to validate and install the license f
 ##### Parameters:
 
 * `name` - Name for the resource. This is not directly used by the provider.
-* `source` - URL to the license file to be installed. Must be a valid HTTP resource.
+* `source` - URL to the license file to be installed.
 * `force` - If `true`, skip the license expiration check and install the new license regardless of any current license. Default is `false`.
 
 ##### Examples:
@@ -149,7 +149,7 @@ Manage a network interface using the ifupdown2 `ifquery` tool. The configuration
 * `ipv4` - Array of IPv4 addresses to be applied to the interface.
 * `ipv6` - Array of IPv6 addresses to be applied to the interface.
 * `alias_name` - Interface alias.
-* `addr_method` - Address assignment method, `dhcp`, `static` or `loopback`. Default is empty, I.e. no address method is set.
+* `addr_method` - Address assignment method, `dhcp` or `loopback`. Default is empty, I.e. no address method is set.
 * `speed` - The interface link speed.
 * `mtu` - The interface Maximum Transmission Unit (MTU)
 * `virtual_ip` - VRR virtual IP
@@ -214,11 +214,11 @@ Manage a network bond using the ifupdown2 `ifquery` tool. The configuration for 
 * `mode` - Bond mode. Default is `802.3ad`
 * `miimon` - MII link monitoring interval. Default is `100`
 * `xmit_hash_policy` - TX hashing policy. Default is `layer3+4`
-* `lacp_rate` - LACP bond rate. Default is `1`
+* `lacp_rate` - LACP bond rate. Default is `1` I.e. fast LACP timeout.
 * `ipv4` - Array of IPv4 addresses to be applied to the interface.
 * `ipv6` - Array of IPv6 addresses to be applied to the interface.
 * `alias_name` - Interface alias.
-* `addr_method` - Address assignment method, `dhcp`, `static` or `loopback`. Default is empty, I.e. no address method is set.
+* `addr_method` - Address assignment method. May be `dhcp` or empty. Default is empty, I.e. no address method is set.
 * `mtu` - The interface Maximum Transmission Unit (MTU)
 * `virtual_ip` - VRR virtual IP
 * `virtual_mac` - VRR virtual MAC
@@ -261,7 +261,7 @@ The provider supports both "classic" and "VLAN aware" bridge driver models.
 * `ipv4` - Array of IPv4 addresses to be applied to the interface.
 * `ipv6` - Array of IPv6 addresses to be applied to the interface.
 * `alias_name` - Interface alias.
-* `addr_method` - Address assignment method, `dhcp`, `static` or `loopback`. Default is empty, I.e. no address method is set.
+* `addr_method` - Address assignment method. May be `dhcp` or empty. Default is empty, I.e. no address method is set.
 * `mtu` - The interface Maximum Transmission Unit (MTU)
 * `stp` - Enable spanning tree. Default is `true`.
 * `mstpctl_treeprio` - Bridge tree root priority. Must be a multiple of 4096.
