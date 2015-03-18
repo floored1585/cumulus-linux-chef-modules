@@ -69,14 +69,14 @@ Configure the switch ports attributes.
 
 ##### Examples:
 
-Configure `swp1` as a 10GbE port, `swp3`, `swp5` through `swp10` and `swp12` as 40GbE ports, `swp15` & `swp16` as 4 x 10GbE ports and `swp20` through `swp32` as 1 x 40GbE aggregate ports.
+Configure `swp5` through `swp48` as 10GbE ports, `swp49` & `swp51` through `swp52` as 40GbE ports, `swp1` through `swp4` as 4 x 10GbE ports and `swp50` as 1 x 40GbE aggregate ports.
 
 ```ruby
 cumulus_ports 'speeds' do
-  speed_10g ['swp1']
-  speed_40g ['swp3','swp5-10', 'swp12']
-  speed_40g_div_4 ['swp15','swp16']
-  speed_4_by_10g ['swp20-32']
+  speed_10g ['swp5-48']
+  speed_40g ['swp49','swp51-52']
+  speed_40g_div_4 ['swp1-4']
+  speed_4_by_10g ['swp50']
   notifies :restart, "service[switchd]"
 end
 ```
