@@ -57,7 +57,7 @@ Just include `cumulus` in your node's `run_list`:
 ----
 #### cumulus_ports
 
-Configure the switch ports on a Trident2 switch.
+Configure the switch ports attributes.
 
 ##### Parameters:
 
@@ -142,6 +142,8 @@ end
 #### cumulus_interface
 
 Manage a network interface using the ifupdown2 `ifquery` tool. The configuration for the interface will be written to a fragment under the interface configurations fragments directory.
+
+The cumulus_interface provider can be used to manage front panel ports, L3 bridge sub-interfaces, L3 physical or bond sub-interfaces, L2/L3 trunks and access ports, the loopback and management ports. For bridge or bond interfaces, see cumulus_bridge or cumulus_bond, below.
 
 ##### Parameters:
 
