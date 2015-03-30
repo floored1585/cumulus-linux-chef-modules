@@ -28,6 +28,16 @@ Contributing
 5. Run the tests, ensuring they all pass
 6. Submit a Pull Request using Github
 
+License and Authors
+-------------------
+* Author:: Cumulus Networks Inc.
+
+* Copyright:: 2015 Cumulus Networks Inc.
+
+Recipes are licensed under the Apache License, Version 2.0
+
+All others are licensed under the GNU General Public License, Version 2.0
+
 ---
 
 ![Cumulus icon](http://cumulusnetworks.com/static/cumulus/img/logo_2014.png)
