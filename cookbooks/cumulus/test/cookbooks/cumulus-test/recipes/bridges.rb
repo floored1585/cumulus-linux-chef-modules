@@ -9,7 +9,7 @@
 
 # Classic bridge driver with defaults
 cumulus_bridge 'br0' do
-  ports ['swp10-11']
+  ports ['swp9', 'swp10-11', 'swp12']
 end
 
 # Classic bridge driver over-ride all defaults

@@ -35,8 +35,8 @@ action :create do
   ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
 
-  config = { 'bridge-ports' => ports,
-             'bridge-stp' => new_resource.stp }
+  config = { 'bridge-ports' => ports.join(' '),
+             'bridge-stp' => Cumulus::Utils.bool_to_yn(new_resource.stp) }
 
   # Insert optional parameters
   config['address'] = address unless address.nil?
@@ -47,7 +47,7 @@ action :create do
   config['address-virtual'] = virtual_mac unless virtual_mac.nil?
 
   if new_resource.vlan_aware
-    config['bridge-vlan-aware'] = true
+    config['bridge-vlan-aware'] = 'yes'
 
     # vids & pvid are valid
     vids = new_resource.vids
