@@ -9,7 +9,7 @@ intf_dir = File.join('', 'etc', 'network', 'interfaces.d')
 describe file("#{intf_dir}/br0") do
   it { should be_file }
   its(:content) { should match(/iface br0/) }
-  its(:content) { should match(/bridge-ports glob swp10-11/) }
+  its(:content) { should match(/bridge-ports swp9 glob swp10-11 swp12/) }
   its(:content) { should match(/bridge-stp True/) }
 end
 

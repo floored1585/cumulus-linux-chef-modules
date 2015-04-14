@@ -35,7 +35,7 @@ action :create do
   ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
 
-  config = { 'bridge-ports' => ports,
+  config = { 'bridge-ports' => ports.join(' '),
              'bridge-stp' => new_resource.stp }
 
   # Insert optional parameters
