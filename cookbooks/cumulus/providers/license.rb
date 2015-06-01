@@ -27,9 +27,9 @@ action :install do
     source = new_resource.source
 
     validate_url!(source)
-    execute "/usr/cumulus/bin/cl-license -i #{source}"
+    license = execute "/usr/cumulus/bin/cl-license -i #{source}"
 
-    new_resource.updated_by_last_action(true)
+    new_resource.updated_by_last_action(license.update_by_last_action?)
   end
 end
 
@@ -43,8 +43,9 @@ end
 def license_invalid?
   invalid = true
   begin
-    if ::File.file?('/etc/cumulus/.license.txt')
-      match = ::File.read('/etc/cumulus/.license.txt').match(/^expires=(\d+).*$/)
+    license = `/usr/cumulus/bin/cl-license`
+    if $?.success?
+      match = license.match(/^expires=(\d+).*$/)
       invalid = Time.now.to_i >= match[1].to_i if match
     end
   rescue StandardError => e
