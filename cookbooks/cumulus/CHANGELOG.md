@@ -8,6 +8,7 @@ This file is used to list changes made in each version of the cumulus-linux-chef
 
 - James Findley
   Use yes/no instead of True/False for Bonds & Bridges
+  Ports will now only run notifies actions if the inline resource updated anything
 
 - Kristian Van Der Vliet
   Fix bridge definitions with multiple ports
