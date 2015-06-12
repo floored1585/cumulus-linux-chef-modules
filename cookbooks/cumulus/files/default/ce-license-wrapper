@@ -217,6 +217,7 @@ def license_install_with_eula_check(license_path):
     with NamedTemporaryFile(mode='w') as license_file:
       debug(license_file.name)
       license_file.write(license)
+      license_file.flush()
       ret = license_install(license_file.name)
   else:
     error("{} requires a EULA".format(license_path))
