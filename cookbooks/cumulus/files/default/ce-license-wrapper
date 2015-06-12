@@ -1,0 +1,297 @@
+#!/usr/bin/env python2.7
+import os
+import sys
+import argparse
+import base64
+import json
+import subprocess
+import urllib2
+from tempfile import NamedTemporaryFile
+
+def be_verbose():
+  return False
+
+def debug(string):
+  if be_verbose():
+    print(string)
+
+def error(string):
+  print(string)
+  exit(1)
+
+def load_license(path):
+    try:
+        response = urllib2.urlopen(path)
+        return response.read().strip()
+    except ValueError:
+        return load_license_from_file(path)
+    except urllib2.HTTPError, e:
+        error("License not Found at URL provided %s" % (e))
+
+def load_license_from_file(path):
+  license=''
+  try:
+    with open(path, 'r') as license_file:
+      license = license_file.read().strip()
+      debug(license)
+  except IOError, e:
+    error(e)
+
+  return license
+
+# Check input and detect license version
+def detect_version(license):
+  version=0
+
+  # v1 license starts with -----BEGIN PGP SIGNED MESSAGE----- on the
+  # first line
+  if license[0:34] == '-----BEGIN PGP SIGNED MESSAGE-----':
+    debug("Version 1 license detected")
+    version = 1
+  else:
+    sepidx = license.find('|')
+    if sepidx != -1:
+      debug("Version 2 license detected")
+      version = 2
+
+  # We must either have a valid version or 0, which indicates an invalid
+  # license
+  return version
+
+# Extract useful information a V1 license
+def v1_details(license):
+  email = None
+  needs_eula = False
+
+  for line in license.split(os.linesep):
+    if 'email=' in line:
+      email = line.split('=')[1]
+    elif 'needs_eula=' in line:
+      eula_flag = line.split('=')[1]
+      needs_eula = True if eula_flag == '1' else False
+
+  return email, needs_eula
+
+# Try to decode the V2 license details
+def v2_details(license):
+  email = None
+  needs_eula = None
+  license_type = None
+
+  if '|' in license:
+    email = license.split('|')[0]
+    details = license.split('|')[1]
+
+    debug("email: {}\ndetails: {}".format(email, details))
+
+    # Decode details
+    try:
+      missing_padding = -len(details) % 4
+      decoded = base64.b64decode(details + '=' * missing_padding )
+      info_bytes = bytearray(decoded)
+
+      eula_bit = info_bytes[0] & 0x01
+      license_bits = (info_bytes[0] & 0xe0) >> 5
+
+      debug("license_bits: {:#x}\teula_bit: {:#x}".format(license_bits, eula_bit))
+
+      # Convert to something useful
+      if eula_bit == 0x01:
+        needs_eula = True
+      else:
+        needs_eula = False
+
+      if license_bits == 0x07:
+        license_type = "Not for resale"
+      elif license_bits == 0x06:
+        license_type = "Trial"
+      elif license_bits == 0x05:
+        license_type = "Production"
+      elif license_bits == 0x04:
+        license_type = "Education"
+      else:
+        license_type = "Unknown"
+
+    except TypeError, e:
+      error("Failed to decode license details %s" % (e))
+
+  return email, needs_eula, license_type
+
+# Generic wrapper for retrieving useful license information
+def license_details(license, version):
+  email = None
+  needs_eula = None
+  license_type = None
+
+  if version == 1:
+    email, needs_eula = v1_details(license)
+  elif version == 2:
+    email, needs_eula, license_type = v2_details(license)
+
+  return email, needs_eula, license_type
+
+# Return the correct installation path for a given license version
+def installation_path(version):
+  if version == 1:
+    return os.path.join(os.sep, 'etc','cumulus','.license.txt')
+  elif version == 2:
+    return os.path.join(os.sep, 'etc','cumulus','.license')
+  else:
+    return None
+
+# Detect if a license is already installed, and return its version
+def current_license():
+  if os.path.isfile(installation_path(1)):
+    return 1
+  elif os.path.isfile(installation_path(2)):
+    return 2
+  else:
+    return 0
+
+def license_json(license_path):
+  # Fixup path to the currently installed license if no license file was
+  # specified
+  if license_path == 'installed':
+    current_license_version = current_license()
+    if current_license_version == 0:
+      error("No license installed!")
+    else:
+      license_path = installation_path(current_license_version)
+
+  license = load_license(license_path)
+  version = detect_version(license)
+  install_path = installation_path(version)
+
+  details = {'version': version, 'file': license_path, 'path': install_path}
+
+  if version == 0:
+    error("{} does not appear to be a valid license".format(license_path))
+  elif version == 1:
+    debug("Version 1 license, will install to {}".format(install_path))
+
+    email, needs_eula = v1_details(license)
+    debug("Email:\t\t{}\nNeeds EULA?\t{}".format(email, needs_eula))
+
+    details['email'] = email
+    details['needs_eula'] = needs_eula
+  elif version == 2:
+    debug("Version 2 license, will install to {}".format(install_path))
+
+    email, needs_eula, license_type = v2_details(license)
+    debug("Email:\t\t{}\nType:\t\t{}\nNeeds EULA?\t{}".format(email, license_type, needs_eula))
+
+    details['email'] = email
+    details['needs_eula'] = needs_eula
+    details['type'] = license_type
+
+  details_json = json.dumps(details, indent=4)
+  print(details_json)
+
+# Check if the "needs_eula" flag is set; return 1 if a EULA is required, 0
+# otherwise
+def license_eula_check(license_path):
+  license = load_license(license_path)
+  version = detect_version(license)
+  email, needs_eula, license_type = license_details(license, version)
+
+  return 1 if needs_eula else 0
+
+# Use cl-license to perform the license installation
+def license_install(license_path):
+  # Pass off to cl-license
+  return subprocess.call("/usr/cumulus/bin/cl-license -i {}".format(license_path), shell=True)
+
+# Attempt to install the license only if no EULA agreement is required
+def license_install_with_eula_check(license_path):
+  ret = 0
+  license = load_license(license_path)
+  version = detect_version(license)
+  email, needs_eula, license_type = license_details(license, version)
+
+  if not needs_eula:
+    # Write out the license file we have and call cl-license to install it
+    # Although we could just pass license_path directly to license_install(),
+    # we already have the license loaded. Writing to a temporary file avoids
+    # potentially downloading the license twice (once for the EULA check, once
+    # to install it)
+    with NamedTemporaryFile(mode='w') as license_file:
+      debug(license_file.name)
+      license_file.write(license)
+      ret = license_install(license_file.name)
+  else:
+    error("{} requires a EULA".format(license_path))
+
+  return ret
+
+# Use cl-license to perform the license deletion
+def license_delete():
+  # Pass off to cl-license
+  return subprocess.call("/usr/cumulus/bin/cl-license -d", shell=True)
+
+# Dump the current license to the console
+def license_print():
+  ret = 0
+  current_license_version = current_license()
+  if current_license_version == 0:
+    print("No license installed!")
+    ret = 20 # Sigh
+  else:
+    license_path = installation_path(current_license_version)
+    license = load_license(license_path)
+    print(license)
+
+  return ret
+
+def main():
+  ret = 0
+
+  # Parse command line arguments
+  parser = argparse.ArgumentParser(description='ce-license prints, inspects, installs or deletes a license on this switch.')
+  parser.add_argument('-i', '--install', metavar='FILE/URL', help='Install a license, via stdin, file, or URL.')
+  parser.add_argument('-d', '--delete', action='store_true', help='Delete the current installed license.')
+  parser.add_argument('-j', '--json', metavar='FILE/URL', nargs='?', const='installed', help='Return information about a license in JSON format.')
+  parser.add_argument('-e', '--eula', metavar='FILE/URL', nargs='?', const='_install', help='Indicate if the license requires the user to agree to a EULA.')
+
+  args = parser.parse_args()
+  debug(args)
+
+  # Handle any combination of -e and/or -i
+  do_install = False
+  do_eula = False
+
+  if args.install:
+    do_install = True
+  if args.eula:
+    do_eula = True
+
+  if do_install and do_eula:
+    debug("installing {} with EULA check".format(args.install))
+    ret = license_install_with_eula_check(args.install)
+  elif do_install:
+    debug("installing {}".format(args.install))
+    ret = license_install(args.install)
+  elif do_eula:
+    debug("EULA check")
+    # Ensure the user specified a license to check
+    if args.eula == '_install':
+      parser.print_help()
+      error("No license specified!")
+    else:
+      ret = license_eula_check(args.eula)
+
+  # Handle other arguments
+  if not do_install and not do_eula:
+    if args.delete:
+      debug("deleting current license")
+      ret = license_delete()
+    elif args.json:
+      debug("JSON info from {}".format(args.json))
+      ret = license_json(args.json)
+    else:
+      debug("printing current license")
+      ret = license_print()
+
+  exit(ret)
+
+if __name__ == "__main__":
+  main()

@@ -20,39 +20,62 @@ def whyrun_supported?
   true
 end
 
+def wrapper_path
+  @temp_path ||= ::File.join(::Dir.tmpdir, 'ce-license-wrapper')
+end
+
 use_inline_resources
 
 action :install do
-  if license_invalid? || new_resource.force
+
+  # Make the license wrapper available
+  wrapper = cookbook_file 'create_wrapper' do
+    action :create
+    backup false
+    force_unlink true
+    owner 'root'
+    group 'root'
+    mode 0755
+    cookbook 'cumulus'
+    source 'ce-license-wrapper'
+    path wrapper_path
+  end
+  wrapper.run_action(:create)
+
+  if !license? || new_resource.force
     source = new_resource.source
 
     validate_url!(source)
-    license = execute "/usr/cumulus/bin/cl-license -i #{source}"
+    license = execute "#{wrapper_path} -e -i #{source}"
 
-    new_resource.updated_by_last_action(license.update_by_last_action?)
+    new_resource.updated_by_last_action(license.updated_by_last_action?)
   end
+
+  # Remove the wrapper
+  remove = file wrapper_path do
+    action :delete
+    backup false
+  end
+  remove.run_action(:delete)
+
 end
 
 ##
-# Check if the license file exists, and if if exists, if it has expired
+# Check if a license file is already installed
 #
 # = Returns:
-# true if either the license doesn't exist, the expiration date can not be read
-# or the expiration date has passed, false otherwise.
+# true if the license exists, false otherwise.
 #
-def license_invalid?
-  invalid = true
+def license?
+  installed = false
   begin
-    license = `/usr/cumulus/bin/cl-license`
-    if $?.success?
-      match = license.match(/^expires=(\d+).*$/)
-      invalid = Time.now.to_i >= match[1].to_i if match
-    end
+    _license_info = `#{wrapper_path} -j`
+    installed = $?.success?
   rescue StandardError => e
     Chef::Application.fatal!("Checking Cumulus license file failed: #{e.message}")
   end
 
-  invalid
+  installed
 end
 
 ##
