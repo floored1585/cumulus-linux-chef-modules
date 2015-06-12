@@ -32,7 +32,6 @@ action :install do
   wrapper = cookbook_file 'create_wrapper' do
     action :create
     backup false
-    force_unlink true
     owner 'root'
     group 'root'
     mode 0755
