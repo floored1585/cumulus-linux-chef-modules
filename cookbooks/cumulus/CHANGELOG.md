@@ -3,6 +3,12 @@ cumulus-linux-chef-modules CHANGELOG
 
 This file is used to list changes made in each version of the cumulus-linux-chef-modules cookbook.
 
+1.0.3
+-----
+
+- Kristian Van Der Vliet
+  Fix cumulus_ports LWRP on Chef 11.x
+
 1.0.2
 -----
 
