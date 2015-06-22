@@ -15,6 +15,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 require 'uri'
+require 'English'
 
 def whyrun_supported?
   true
@@ -23,7 +24,7 @@ end
 use_inline_resources
 
 action :install do
-  if license_invalid? || new_resource.force
+  unless exists? && new_resource.force == false
     source = new_resource.source
 
     validate_url!(source)
@@ -34,24 +35,14 @@ action :install do
 end
 
 ##
-# Check if the license file exists, and if if exists, if it has expired
+# Check if the license file exists
 #
 # = Returns:
-# true if either the license doesn't exist, the expiration date can not be read
-# or the expiration date has passed, false otherwise.
+# true if the license exists, false otherwise.
 #
-def license_invalid?
-  invalid = true
-  begin
-    if ::File.file?('/etc/cumulus/.license.txt')
-      match = ::File.read('/etc/cumulus/.license.txt').match(/^expires=(\d+).*$/)
-      invalid = Time.now.to_i >= match[1].to_i if match
-    end
-  rescue StandardError => e
-    Chef::Application.fatal!("Checking Cumulus license file failed: #{e.message}")
-  end
-
-  invalid
+def exists?
+  `/usr/cumulus/bin/cl-license`
+  $CHILD_STATUS == 0 ? true : false
 end
 
 ##
