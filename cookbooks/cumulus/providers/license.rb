@@ -15,6 +15,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 require 'uri'
+require 'English'
 
 def whyrun_supported?
   true
@@ -23,7 +24,7 @@ end
 use_inline_resources
 
 action :install do
-  unless exists? and new_resource.force == false
+  unless exists? && new_resource.force == false
     source = new_resource.source
 
     validate_url!(source)
@@ -41,7 +42,7 @@ end
 #
 def exists?
   `/usr/cumulus/bin/cl-license`
-  return $? == 0 ? true : false
+  $CHILD_STATUS == 0 ? true : false
 end
 
 ##
