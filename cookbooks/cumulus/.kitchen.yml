@@ -3,13 +3,15 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_zero
+  name: chef_solo
+  require_chef_omnibus: false
 
 platforms:
-  - name: ubuntu-14.04
+  - name: cumulus-vx-2.5.3
     driver:
-      box: opscode-ubuntu-14.04
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box
+      box: cumulus-vx-2.5.3
+      provision: true
+      vagrantfiles: ['test/provision-chef.rb']
 
 suites:
   - name: default
