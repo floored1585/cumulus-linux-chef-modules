@@ -16,7 +16,7 @@ end
 describe file("#{intf_dir}/br1") do
   it { should be_file }
   its(:content) { should match(/iface br1/) }
-  its(:content) { should match(/bridge-ports glob swp12-13/) }
+  its(:content) { should match(/bridge-ports glob swp13-14/) }
   its(:content) { should match(/bridge-stp no/) }
   its(:content) { should match(/mtu 9000/) }
   its(:content) { should match(/mstpctl-treeprio 4096/) }

@@ -14,7 +14,7 @@ end
 
 # Classic bridge driver over-ride all defaults
 cumulus_bridge 'br1' do
-  ports ['swp12-13']
+  ports ['swp13-14']
   ipv4 ['10.0.0.1/24', '192.168.1.0/16']
   ipv6 ['2001:db8:abcd::/48']
   alias_name 'classic bridge number 1'
