@@ -34,7 +34,9 @@ action :create do
   vids = new_resource.vids
   pvid = new_resource.pvid
   mstpctl_portnetwork = new_resource.mstpctl_portnetwork
+  mstpctl_portadminedge = new_resource.mstpctl_portadminedge
   mstpctl_bpduguard = new_resource.mstpctl_bpduguard
+  lacp_bypass_allow = new_resource.lacp_bypass_allow
   location = new_resource.location
 
   ipv4 = new_resource.ipv4
@@ -58,10 +60,31 @@ action :create do
   config['address-virtual'] = virtual_mac unless virtual_mac.nil?
   config['address-virtual'] = virtual_ip unless virtual_ip.nil?
   config['mstpctl-portnetwork'] = Cumulus::Utils.bool_to_yn(mstpctl_portnetwork) unless mstpctl_portnetwork.nil?
+  config['mstpctl-portadminedge'] = Cumulus::Utils.bool_to_yn(mstpctl_portadminedge) unless mstpctl_portadminedge.nil?
   config['mstpctl-bpduguard'] = Cumulus::Utils.bool_to_yn(mstpctl_bpduguard) unless mstpctl_bpduguard.nil?
 
   # Family is always 'inet' if a method is set
   addr_family = addr_method.nil? ? nil : 'inet'
+
+  if lacp_bypass_allow
+    lacp_bypass_period = new_resource.lacp_bypass_period
+    lacp_bypass_priority = new_resource.lacp_bypass_priority
+    lacp_bypass_all_active = new_resource.lacp_bypass_all_active
+
+    # Validate the other options if LACP bypass is enabled
+    if lacp_bypass_allow == '1'
+      if lacp_bypass_priority.nil? && lacp_bypass_all_active.nil?
+        Chef::Application.fatal!('Either lacp_bypass_priority or lacp_bypass_all_active must be set when lacp_bypass_allow is enabled')
+      elsif !lacp_bypass_priority.nil? && !lacp_bypass_all_active.nil?
+        Chef::Application.fatal!('Only one of lacp_bypass_priority or lacp_bypass_all_active must be set when lacp_bypass_allow is enabled')
+      end
+    end
+
+    config['bond-lacp-bypass-allow'] = lacp_bypass_allow
+    config['bond-lacp-bypass-priority'] = lacp_bypass_priority unless lacp_bypass_priority.nil?
+    config['bond-lacp-bypass-all-active'] = lacp_bypass_all_active unless lacp_bypass_all_active.nil?
+    config['bond-lacp-bypass-period'] = lacp_bypass_period unless lacp_bypass_period.nil?
+  end
 
   new = [{ 'auto' => true,
            'name' => name,
