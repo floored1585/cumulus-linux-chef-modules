@@ -29,5 +29,6 @@ cumulus_interface 'swp2' do
   virtual_mac '11:22:33:44:55:66'
   virtual_ip '192.168.10.1'
   mstpctl_portnetwork true
+  mstpctl_portadminedge true
   mstpctl_bpduguard true
 end
