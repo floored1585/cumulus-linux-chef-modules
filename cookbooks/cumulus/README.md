@@ -161,6 +161,7 @@ The cumulus_interface provider can be used to manage front panel ports, L3 bridg
 * `location` - Location of the configuration snippets directory. Default is the directory set by the `node['cumulus']['interfaces']['dir']` attribute.
 * `mstpctl_portnetwork` - Enable bridge assurance on a VLAN aware trunk.
 * `mstpctl_bpduguard` - Enable BPDU guard on a VLAN aware trunk.
+* `mstpctl_portadminedge` - Enables admin edge port.
 
 The following CLAG related attributes are also available. If CLAG is enabled, `clagd_enable`, `clagd_priority`, `clagd_peer_id` and `clagd_sys_mac` should all be provided:
 
@@ -229,7 +230,15 @@ Manage a network bond using the ifupdown2 `ifquery` tool. The configuration for 
 * `location` - Location of the configuration snippets directory. Default is the directory set by the `node['cumulus']['interfaces']['dir']` attribute.
 * `mstpctl_portnetwork` - Enable bridge assurance on a VLAN aware trunk.
 * `mstpctl_bpduguard` - Enable BPDU guard on a VLAN aware trunk.
+* `mstpctl_portadminedge` - Enables admin edge port.
 * `clag_id` - Define which bond is in the CLAG. The ID must be the same on both CLAG peers.
+
+The following LACP bypass related attributes are also available. If LACP bypass is enabled, one of the `lacp_bypass_priority` or `lacp_bypass_all_active` attributes must be specified:
+
+* `lacp_bypass_allow` - Enable LACP bypass
+* `lacp_bypass_period` - LACP bypass period
+* `lacp_bypass_priority` - Enable priority mode for LACP bypass
+* `lacp_bypass_all_active` - Enable all-active mode for LACP bypass
 
 ##### Examples:
 

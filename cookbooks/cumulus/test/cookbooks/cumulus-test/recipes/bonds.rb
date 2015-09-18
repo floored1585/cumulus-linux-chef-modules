@@ -24,6 +24,9 @@ cumulus_bond 'bond1' do
   miimon 99
   xmit_hash_policy 'layer2'
   lacp_rate 9
+  lacp_bypass_allow 1
+  lacp_bypass_period 30
+  lacp_bypass_all_active 1
   mtu 9000
   # ifquery doesn't seem to like clagd related parameters on an interface?
   # clag_id 1
@@ -33,5 +36,6 @@ cumulus_bond 'bond1' do
   virtual_mac '11:22:33:44:55:FF'
   virtual_ip '192.168.20.1'
   mstpctl_portnetwork true
+  mstpctl_portadminedge true
   mstpctl_bpduguard true
 end

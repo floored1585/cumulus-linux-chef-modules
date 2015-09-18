@@ -49,6 +49,7 @@ describe file("#{intf_dir}/swp2") do
   its(:content) { should match(/link-duplex full/) }
   its(:content) { should match(/alias "interface swp2"/) }
   its(:content) { should match(/mstpctl-portnetwork yes/) }
+  its(:content) { should match(/mstpctl-portadminedge yes/) }
   its(:content) { should match(/mstpctl-bpduguard yes/) }
   its(:content) { should match(/address-virtual/) }
 end

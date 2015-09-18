@@ -3,6 +3,16 @@ cumulus-linux-chef-modules CHANGELOG
 
 This file is used to list changes made in each version of the cumulus-linux-chef-modules cookbook.
 
+1.2.0
+-----
+- Kristian Van Der Vliet
+  Add lacp_bypass attributes to Bonds:
+    - lacp_bypass_allow
+    - lacp_bypass_period
+    - lacp_bypass_priority
+    - lacp_bypass_all_active
+  Add mstpctl_portadminedge attribute to Bonds & Interfaces.
+
 1.1.0
 -----
 - Kristian Van Der Vliet
