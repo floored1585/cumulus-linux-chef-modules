@@ -56,7 +56,8 @@ describe file("#{intf_dir}/swp2") do
   its(:content) { should match(/post_up ip route add 172.16.0.0\/12 via 192.168.200.2/) }
 end
 
+# post_up should work as String as well as Array
 describe file("#{intf_dir}/swp3") do
-  its(:content) { should match(/iface swp1/) }
+  its(:content) { should match(/iface swp3/) }
   its(:content) { should match(/post_up ip route add 192.168.0.0\/16 via 192.168.200.2/) }
 end
