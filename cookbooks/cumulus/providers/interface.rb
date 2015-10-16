@@ -31,6 +31,7 @@ action :create do
   virtual_ip = new_resource.virtual_ip
   vids = new_resource.vids
   pvid = new_resource.pvid
+  post_up = new_resource.post_up
   mstpctl_portnetwork = new_resource.mstpctl_portnetwork
   mstpctl_portadminedge = new_resource.mstpctl_portadminedge
   mstpctl_bpduguard = new_resource.mstpctl_bpduguard
