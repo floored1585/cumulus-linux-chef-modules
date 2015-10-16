@@ -31,6 +31,7 @@ action :create do
   virtual_ip = new_resource.virtual_ip
   vids = new_resource.vids
   pvid = new_resource.pvid
+  post_up = new_resource.post_up
   mstpctl_portnetwork = new_resource.mstpctl_portnetwork
   mstpctl_portadminedge = new_resource.mstpctl_portadminedge
   mstpctl_bpduguard = new_resource.mstpctl_bpduguard
@@ -39,8 +40,6 @@ action :create do
   ipv4 = new_resource.ipv4
   ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
-
-  post_up = new_resource.post_up
 
   config = {}
 
