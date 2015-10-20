@@ -53,7 +53,7 @@ action :create do
   config['bridge-pvid'] = pvid unless pvid.nil?
   config['address-virtual'] = virtual_mac unless virtual_mac.nil?
   config['address-virtual'] = virtual_ip unless virtual_ip.nil?
-  config['post_up'] = post_up unless post_up.nil?
+  config['post-up'] = post_up unless post_up.nil?
   config['mstpctl-portnetwork'] = Cumulus::Utils.bool_to_yn(mstpctl_portnetwork) unless mstpctl_portnetwork.nil?
   config['mstpctl-portadminedge'] = Cumulus::Utils.bool_to_yn(mstpctl_portadminedge) unless mstpctl_portadminedge.nil?
   config['mstpctl-bpduguard'] = Cumulus::Utils.bool_to_yn(mstpctl_bpduguard) unless mstpctl_bpduguard.nil?
