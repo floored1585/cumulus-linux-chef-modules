@@ -158,7 +158,8 @@ The cumulus_interface provider can be used to manage front panel ports, L3 bridg
 * `virtual_mac` - VRR virtual MAC
 * `vids` - Array of VLANs to be configured for a VLAN aware trunk interface.
 * `pvid` - Native VLAN for a VLAN aware trunk interface.
-* `post_up` - String or Array of post_up commands(s) to run.
+* `post_up` - String or Array of post-up commands(s) to run.
+* `pre_down` - String or Array of pre-down commands(s) to run.
 * `location` - Location of the configuration snippets directory. Default is the directory set by the `node['cumulus']['interfaces']['dir']` attribute.
 * `mstpctl_portnetwork` - Enable bridge assurance on a VLAN aware trunk.
 * `mstpctl_bpduguard` - Enable BPDU guard on a VLAN aware trunk.
