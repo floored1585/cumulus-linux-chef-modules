@@ -35,9 +35,14 @@ cumulus_interface 'swp2' do
     "ip route add 10.0.0.0/8 via 192.168.200.2",
     "ip route add 172.16.0.0/12 via 192.168.200.2"
   ]
+  pre_down [
+    "ip route del 10.0.0.0/8 via 192.168.200.2",
+    "ip route del 172.16.0.0/12 via 192.168.200.2"
+  ]
 end
 
-# Test post_up as String instead of Array
+# Test post_up and pre_down as String instead of Array
 cumulus_interface 'swp3' do
   post_up "ip route add 192.168.0.0/16 via 192.168.200.2"
+  pre_down "ip route del 192.168.0.0/16 via 192.168.200.2"
 end
