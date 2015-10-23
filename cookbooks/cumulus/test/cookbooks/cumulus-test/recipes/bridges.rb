@@ -43,4 +43,12 @@ cumulus_bridge 'bridge3' do
   stp false
   mstpctl_treeprio 4096
   virtual_mac 'aa:bb:cc:dd:ee:ff'
+  post_up [
+    "ip route add 10.0.0.0/8 via 192.168.200.2",
+    "ip route add 172.16.0.0/12 via 192.168.200.2"
+  ]
+  pre_down [
+    "ip route del 10.0.0.0/8 via 192.168.200.2",
+    "ip route del 172.16.0.0/12 via 192.168.200.2"
+  ]
 end

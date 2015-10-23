@@ -29,6 +29,8 @@ action :create do
   alias_name = new_resource.alias_name
   virtual_ip = new_resource.virtual_ip
   virtual_mac = new_resource.virtual_mac
+  post_up = new_resource.post_up
+  pre_down = new_resource.pre_down
   location = new_resource.location
 
   ipv4 = new_resource.ipv4
@@ -45,6 +47,8 @@ action :create do
   config['alias'] = "\"#{alias_name}\"" unless alias_name.nil?
   config['address-virtual'] = virtual_ip unless virtual_ip.nil?
   config['address-virtual'] = virtual_mac unless virtual_mac.nil?
+  config['post-up'] = post_up unless post_up.nil?
+  config['pre-down'] = pre_down unless post_up.nil?
 
   if new_resource.vlan_aware
     config['bridge-vlan-aware'] = 'yes'
