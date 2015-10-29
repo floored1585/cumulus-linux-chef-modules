@@ -3,6 +3,11 @@ cumulus-linux-chef-modules CHANGELOG
 
 This file is used to list changes made in each version of the cumulus-linux-chef-modules cookbook.
 
+1.2.1
+-----
+- Ian Clark (PR)
+ Add pre-down/post-up
+ Fix ifquery -o comparison
 1.2.0
 -----
 - Kristian Van Der Vliet
