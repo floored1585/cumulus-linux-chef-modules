@@ -45,4 +45,8 @@ describe file("#{intf_dir}/bridge3") do
   its(:content) { should match(/bridge-vids 1-4094/) }
   its(:content) { should match(/address 192.168.100.0\/16/) }
   its(:content) { should match(/address 2001:db8:1234::\/48/) }
+  its(:content) { should match(/post-up ip route add 10.0.0.0\/8 via 192.168.200.2/) }
+  its(:content) { should match(/post-up ip route add 172.16.0.0\/12 via 192.168.200.2/) }
+  its(:content) { should match(/pre-down ip route del 10.0.0.0\/8 via 192.168.200.2/) }
+  its(:content) { should match(/pre-down ip route del 172.16.0.0\/12 via 192.168.200.2/) }
 end
