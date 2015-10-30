@@ -42,6 +42,8 @@ action :create do
 
   # Insert optional parameters
   config['address'] = address unless address.nil?
+  # If single address, don't use an array (for ifquery -o json equality test)
+  config['address'] = address[0] if address.class == Array && address.count == 1
   config['mtu'] = mtu unless mtu.nil?
   config['mstpctl-treeprio'] = mstpctl_treeprio unless mstpctl_treeprio.nil?
   config['alias'] = "\"#{alias_name}\"" unless alias_name.nil?
@@ -66,9 +68,10 @@ action :create do
 
   new = [{ 'auto' => true,
            'name' => name,
-           'config' => config,
-           'addr_method' => addr_method,
-           'addr_family' => addr_family }]
+           'config' => config }]
+
+  new[0]['addr_method'] = addr_method if addr_method
+  new[0]['addr_family'] = addr_family if addr_family
 
   current = Cumulus::Utils.if_to_hash(name)
 
