@@ -230,6 +230,51 @@ module Cumulus
       def bool_to_yn(bool)
         bool ? 'yes' : 'no'
       end
+
+      ##
+      # Returns the current Cumulus Linux version (eg: 2.5.3)
+      #
+      # = Example
+      #
+      #   version
+      #   => '2.5.3'
+      #
+      # = Returns:
+      # A String containing the current Cumulus Linux version
+      #
+      def version
+        begin
+          version_file = IO.read('/etc/lsb-release')
+          version_match = /DISTRIB_RELEASE=(\d+\.\d+\.\d+)/.match(version_file)
+          return version_match[1] if version_match
+        rescue StandardError => e
+          Chef::Log.error("Failed to get the Cumulus Linux version information: #{e}")
+          return nil
+        end
+      end
+
+      ##
+      # Returns a numberic representation of the current Cumulus Linux
+      # version (eg: '2.5.3' = 253).  Useful for checking for feature
+      # support (if version_int >= 254 ...)
+      #
+      # = Example
+      #
+      #   version_int
+      #   => 253
+      #
+      # = Returns:
+      # An Integer containing the current Cumulus Linux version
+      #
+      def version_int
+        begin
+          return version.tr('.', '').to_i
+        rescue StandardError => e
+          Chef::Log.error("Failed to get the Cumulus Linux version information: #{e}")
+          return nil
+        end
+      end
+
     end
   end
 end
