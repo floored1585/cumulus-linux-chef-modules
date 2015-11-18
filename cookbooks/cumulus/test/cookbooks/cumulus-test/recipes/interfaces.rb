@@ -42,7 +42,9 @@ cumulus_interface 'swp2' do
 end
 
 # Test post_up and pre_down as String instead of Array
+# Test using virtual_ip for both mac and IP
 cumulus_interface 'swp3' do
   post_up "ip route add 192.168.0.0/16 via 192.168.200.2"
   pre_down "ip route del 192.168.0.0/16 via 192.168.200.2"
+  virtual_ip '11:22:33:44:55:66 192.168.10.1'
 end

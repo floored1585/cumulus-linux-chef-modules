@@ -47,8 +47,7 @@ action :create do
   config['mtu'] = mtu unless mtu.nil?
   config['mstpctl-treeprio'] = mstpctl_treeprio unless mstpctl_treeprio.nil?
   config['alias'] = "\"#{alias_name}\"" unless alias_name.nil?
-  config['address-virtual'] = virtual_ip unless virtual_ip.nil?
-  config['address-virtual'] = virtual_mac unless virtual_mac.nil?
+  config['address-virtual'] = [virtual_mac, virtual_ip].compact.join(' ') unless virtual_ip.nil?
   config['post-up'] = post_up unless post_up.nil?
   config['pre-down'] = pre_down unless post_up.nil?
 

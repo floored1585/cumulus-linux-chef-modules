@@ -61,8 +61,7 @@ action :create do
   config['clag-id'] = clag_id unless clag_id.nil?
   config['bridge-vids'] = vids unless vids.nil?
   config['bridge-pvid'] = pvid unless pvid.nil?
-  config['address-virtual'] = virtual_mac unless virtual_mac.nil?
-  config['address-virtual'] = virtual_ip unless virtual_ip.nil?
+  config['address-virtual'] = [virtual_mac, virtual_ip].compact.join(' ') unless virtual_ip.nil?
   config['post-up'] = post_up unless post_up.nil?
   config['pre-down'] = pre_down unless post_up.nil?
   config['mstpctl-portnetwork'] = Cumulus::Utils.bool_to_yn(mstpctl_portnetwork) unless mstpctl_portnetwork.nil?
