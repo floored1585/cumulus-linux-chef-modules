@@ -56,7 +56,7 @@ action :create do
   config['address'] = address unless address.nil?
   # If single address, don't use an array (for ifquery -o json equality test)
   config['address'] = address[0] if address.class == Array && address.count == 1
-  config['alias'] = "\"#{alias_name}\"" unless alias_name.nil?
+  config['alias'] = alias_name unless alias_name.nil?
   config['mtu'] = mtu unless mtu.nil?
   config['clag-id'] = clag_id unless clag_id.nil?
   config['bridge-vids'] = vids unless vids.nil?

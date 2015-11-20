@@ -46,7 +46,7 @@ action :create do
   config['address'] = address[0] if address.class == Array && address.count == 1
   config['mtu'] = mtu unless mtu.nil?
   config['mstpctl-treeprio'] = mstpctl_treeprio unless mstpctl_treeprio.nil?
-  config['alias'] = "\"#{alias_name}\"" unless alias_name.nil?
+  config['alias'] = alias_name unless alias_name.nil?
   config['address-virtual'] = virtual_ip unless virtual_ip.nil?
   config['address-virtual'] = virtual_mac unless virtual_mac.nil?
   config['post-up'] = post_up unless post_up.nil?
