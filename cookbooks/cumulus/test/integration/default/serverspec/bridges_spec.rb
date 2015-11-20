@@ -16,6 +16,7 @@ end
 describe file("#{intf_dir}/br1") do
   it { should be_file }
   its(:content) { should match(/iface br1/) }
+  its(:content) { should match(/alias classic bridge number 1/) }
   its(:content) { should match(/bridge-ports glob swp13-14/) }
   its(:content) { should match(/bridge-stp no/) }
   its(:content) { should match(/mtu 9000/) }
@@ -36,6 +37,7 @@ end
 describe file("#{intf_dir}/bridge3") do
   it { should be_file }
   its(:content) { should match(/iface bridge3/) }
+  its(:content) { should match(/alias new bridge number 3/) }
   its(:content) { should match(/bridge-vlan-aware yes/) }
   its(:content) { should match(/bridge-ports glob swp17-18/) }
   its(:content) { should match(/bridge-stp no/) }
