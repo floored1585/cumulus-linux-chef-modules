@@ -4,3 +4,4 @@ cookbooks/cumulus/.bundle/
 cookbooks/cumulus/Berksfile.lock
 cookbooks/cumulus/Gemfile.lock
 cookbooks/cumulus/vendor/
+*.swp

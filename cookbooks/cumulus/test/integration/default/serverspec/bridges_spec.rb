@@ -23,6 +23,7 @@ describe file("#{intf_dir}/br1") do
   its(:content) { should match(/mstpctl-treeprio 4096/) }
   its(:content) { should match(/address 10.0.0.1\/24/) }
   its(:content) { should match(/address 2001:db8:abcd::\/48/) }
+  its(:content) { should match(/address-virtual aa:bb:cc:dd:ee:ff 192.168.100.1/) }
 end
 
 # New bridge driver
