@@ -47,7 +47,8 @@ action :create do
   mstpctl_bpduguard = data['mstpctl_bpduguard']
   min_links = data['min_links'] || 1
   mode = data['mode'] || '802.3ad'
-  miimon = data['miimon'] || '802.3ad'
+  miimon = data['miimon'] || 100
+  lacp_rate = data['lacp_rate'] || 1
   xmit_hash_policy = data['xmit_hash_policy'] || 'layer3+4'
 
   location = new_resource.location
@@ -58,9 +59,8 @@ action :create do
              'bond-min-links' => min_links,
              'bond-mode' => mode,
              'bond-miimon' => miimon,
+             'bond-lacp-rate' => lacp_rate,
              'bond-xmit-hash-policy' => xmit_hash_policy }
-
-  config['bond-lacp-rate'] = data['lacp_rate'] if data['lacp_rate']
 
   # Insert optional parameters
   config['address'] = address unless address.nil?
