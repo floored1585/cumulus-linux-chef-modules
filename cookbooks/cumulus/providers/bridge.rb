@@ -22,23 +22,32 @@ use_inline_resources
 
 action :create do
   name = new_resource.name
-  addr_method = new_resource.addr_method
-  ports = Cumulus::Utils.prefix_glob_port_list(new_resource.ports)
-  mtu = new_resource.mtu
-  mstpctl_treeprio = new_resource.mstpctl_treeprio
-  alias_name = new_resource.alias_name
-  virtual_ip = new_resource.virtual_ip
-  virtual_mac = new_resource.virtual_mac
-  post_up = new_resource.post_up
-  pre_down = new_resource.pre_down
+  data = node['cumulus']['bridge'][name]
+
+  ports = data['ports'] || []
+  ipv4 = data['ipv4'] || []
+  ipv6 = data['ipv6'] || []
+  mtu = data['mtu']
+  addr_method = data['addr_method']
+  alias_name = data['alias']
+  mstpctl_treeprio = data['mstpctl_treeprio']
+  post_up = data['post_up']
+  pre_down = data['pre_down']
+  virtual_ip = data['virtual_ip']
+  virtual_mac = data['virtual_mac']
+
+  # Default to 'true' if no value provided
+  stp = data['stp']
+  stp = true if stp.nil?
+
+  ports = Cumulus::Utils.prefix_glob_port_list(ports)
+
   location = new_resource.location
 
-  ipv4 = new_resource.ipv4
-  ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
 
   config = { 'bridge-ports' => ports.join(' '),
-             'bridge-stp' => Cumulus::Utils.bool_to_yn(new_resource.stp) }
+             'bridge-stp' => Cumulus::Utils.bool_to_yn(stp) }
 
   # Insert optional parameters
   config['address'] = address unless address.nil?
@@ -51,12 +60,12 @@ action :create do
   config['post-up'] = post_up unless post_up.nil?
   config['pre-down'] = pre_down unless post_up.nil?
 
-  if new_resource.vlan_aware
+  if data['vlan_aware']
     config['bridge-vlan-aware'] = 'yes'
 
     # vids & pvid are valid
-    vids = new_resource.vids
-    pvid = new_resource.pvid
+    vids = data['vids']
+    pvid = data['pvid']
 
     config['bridge-vids'] = vids unless vids.nil?
     config['bridge-pvid'] = pvid unless pvid.nil?

@@ -24,33 +24,43 @@ use_inline_resources
 
 action :create do
   name = new_resource.name
-  addr_method = new_resource.addr_method
-  slaves = Cumulus::Utils.prefix_glob_port_list(new_resource.slaves)
-  alias_name = new_resource.alias_name
-  mtu = new_resource.mtu
-  clag_id = new_resource.clag_id
-  virtual_mac = new_resource.virtual_mac
-  virtual_ip = new_resource.virtual_ip
-  vids = new_resource.vids
-  pvid = new_resource.pvid
-  post_up = new_resource.post_up
-  pre_down = new_resource.pre_down
-  mstpctl_portnetwork = new_resource.mstpctl_portnetwork
-  mstpctl_portadminedge = new_resource.mstpctl_portadminedge
-  mstpctl_bpduguard = new_resource.mstpctl_bpduguard
-  lacp_bypass_allow = new_resource.lacp_bypass_allow
+  data = node['cumulus']['bond'][name]
+
+  Chef::Application.fatal!('Trying to configure a bond with no slaves =(') unless data['slaves']
+
+  ipv4 = data['ipv4'] || []
+  ipv6 = data['ipv6'] || []
+  slaves = Cumulus::Utils.prefix_glob_port_list(data['slaves'])
+  addr_method = data['addr_method']
+  alias_name = data['alias']
+  mtu = data['mtu']
+  clag_id = data['clag_id']
+  lacp_bypass_allow = data['lacp_bypass_allow']
+  virtual_mac = data['virtual_mac']
+  virtual_ip = data['virtual_ip']
+  vids = data['vids']
+  pvid = data['pvid']
+  post_up = data['post_up']
+  pre_down = data['pre_down']
+  mstpctl_portnetwork = data['mstpctl_portnetwork']
+  mstpctl_portadminedge = data['mstpctl_portadminedge']
+  mstpctl_bpduguard = data['mstpctl_bpduguard']
+  min_links = data['min_links'] || 1
+  mode = data['mode'] || '802.3ad'
+  miimon = data['miimon'] || '802.3ad'
+  xmit_hash_policy = data['xmit_hash_policy'] || 'layer3+4'
+
   location = new_resource.location
 
-  ipv4 = new_resource.ipv4
-  ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
 
   config = { 'bond-slaves' => slaves.join(' '),
-             'bond-miimon' => new_resource.miimon,
-             'bond-min-links' => new_resource.min_links,
-             'bond-mode' => new_resource.mode,
-             'bond-xmit-hash-policy' => new_resource.xmit_hash_policy,
-             'bond-lacp-rate' => new_resource.lacp_rate }
+             'bond-min-links' => min_links,
+             'bond-mode' => mode,
+             'bond-miimon' => miimon,
+             'bond-xmit-hash-policy' => xmit_hash_policy }
+
+  config['bond-lacp-rate'] = data['lacp_rate'] if data['lacp_rate']
 
   # Insert optional parameters
   config['address'] = address unless address.nil?
@@ -72,9 +82,9 @@ action :create do
   addr_family = addr_method.nil? ? nil : 'inet'
 
   if lacp_bypass_allow
-    lacp_bypass_period = new_resource.lacp_bypass_period
-    lacp_bypass_priority = new_resource.lacp_bypass_priority
-    lacp_bypass_all_active = new_resource.lacp_bypass_all_active
+    lacp_bypass_period = data['lacp_bypass_period']
+    lacp_bypass_priority = data['lacp_bypass_priority']
+    lacp_bypass_all_active = data['lacp_bypass_all_active']
 
     # Validate the other options if LACP bypass is enabled
     if lacp_bypass_allow == '1'

@@ -25,14 +25,19 @@ action :create do
     action :create
   end
 
+  speed_10g = node.cumulus.ports['10g'] || []
+  speed_40g = node.cumulus.ports['40g'] || []
+  speed_40g_div_4 = node.cumulus.ports['40g_div_4'] || []
+  speed_4_by_10g = node.cumulus.ports['4_by_10g'] || []
+
   port = template '/etc/cumulus/ports.conf' do
     cookbook 'cumulus'
     source 'ports.erb'
     variables(
-      speed_10g: Cumulus::Utils.expand_port_list(new_resource.speed_10g),
-      speed_40g: Cumulus::Utils.expand_port_list(new_resource.speed_40g),
-      speed_40g_div_4: Cumulus::Utils.expand_port_list(new_resource.speed_40g_div_4),
-      speed_4_by_10g: Cumulus::Utils.expand_port_list(new_resource.speed_4_by_10g)
+      speed_10g: Cumulus::Utils.expand_port_list(speed_10g),
+      speed_40g: Cumulus::Utils.expand_port_list(speed_40g),
+      speed_40g_div_4: Cumulus::Utils.expand_port_list(speed_40g_div_4),
+      speed_4_by_10g: Cumulus::Utils.expand_port_list(speed_4_by_10g)
     )
     owner 'root'
     group 'root'

@@ -22,24 +22,34 @@ use_inline_resources
 
 action :create do
   name = new_resource.name
-  addr_method = new_resource.addr_method
-  speed = new_resource.speed
-  mtu = new_resource.mtu
-  clagd_enable = new_resource.clagd_enable
-  alias_name = new_resource.alias_name
-  virtual_mac = new_resource.virtual_mac
-  virtual_ip = new_resource.virtual_ip
-  vids = new_resource.vids
-  pvid = new_resource.pvid
-  post_up = new_resource.post_up
-  pre_down = new_resource.pre_down
-  mstpctl_portnetwork = new_resource.mstpctl_portnetwork
-  mstpctl_portadminedge = new_resource.mstpctl_portadminedge
-  mstpctl_bpduguard = new_resource.mstpctl_bpduguard
+  range = new_resource.range
+
+  # If we have an interface range, look in the right place for the data
+  if range
+    data = node['cumulus']['interface_range'][range]
+  else
+    data = node['cumulus']['interface'][name]
+  end
+
+  ipv4 = data['ipv4'] || []
+  ipv6 = data['ipv6'] || []
+  alias_name = data['alias']
+  speed = data['speed']
+  mtu = data['mtu']
+  post_up = data['post_up']
+  pre_down = data['pre_down']
+  addr_method = data['addr_method']
+  virtual_mac = data['virtual_mac']
+  virtual_ip = data['virtual_ip']
+  vids = data['vids']
+  pvid = data['pvid']
+  clagd_enable = data['clagd_enable']
+  mstpctl_portnetwork = data['mstpctl_portnetwork']
+  mstpctl_portadminedge = data['mstpctl_portadminedge']
+  mstpctl_bpduguard = data['mstpctl_bpduguard']
+
   location = new_resource.location
 
-  ipv4 = new_resource.ipv4
-  ipv6 = new_resource.ipv6
   address = ipv4 + ipv6
 
   config = {}
@@ -61,10 +71,10 @@ action :create do
 
   # Insert CLAG parameters if CLAG is enabled
   if clagd_enable
-    clagd_peer_ip = new_resource.clagd_peer_ip
-    clagd_priority = new_resource.clagd_priority
-    clagd_sys_mac = new_resource.clagd_sys_mac
-    clagd_args = new_resource.clagd_args
+    clagd_peer_ip = data['clagd_peer_ip']
+    clagd_priority = data['clagd_priority']
+    clagd_sys_mac = data['clagd_sys_mac']
+    clagd_args = data['clagd_args']
 
     config['clagd-enable'] = 'yes'
     config['clagd-peer-ip'] = clagd_peer_ip unless clagd_peer_ip.nil?
